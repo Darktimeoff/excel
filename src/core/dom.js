@@ -12,6 +12,13 @@ class Dom {
         return this.$el;
     }
 
+    on(event, handler) {
+        this.$el.addEventListener(event, handler);
+    }
+
+    off(event, handler) {
+        this.$el.removeEventListener(event, handler);
+    }
 
     clear() {
         this.html('');
