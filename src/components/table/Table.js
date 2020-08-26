@@ -79,19 +79,21 @@ function resize($root, $target, $el, mousedownEvent) {
 }
 
 function findResizeCellElm($el, $root, resizeType) {
-	if(resizeType === 'col') {
-		const columnIndex = [...$el.closest('.row-data').querySelectorAll('.column')].indexOf($el);
+	return resizeType === 'col' ? findResizeCol($el, $root) : findResizeRow($el);
+}
 
-		const resizeCellElms = [...$root.html().querySelectorAll(`.row>.row-data>.cell:nth-child(${columnIndex + 1})`)];
-		resizeCellElms.push($el);
-		
-		return resizeCellElms;
-	} 
+function findResizeCol($el, $root) {
+	const columnIndex = [...$el.closest('.row-data').querySelectorAll('.column')].indexOf($el);
 
-	if(resizeType === 'row') {
-		const resizeCellElms = [...$el.nextElementSibling.querySelectorAll('div.cell')];
-		resizeCellElms.push($el);
+	const resizeCellElms = [...$root.html().querySelectorAll(`.row>.row-data>.cell:nth-child(${columnIndex + 1})`)];
+	resizeCellElms.push($el);
 	
-		return resizeCellElms;
-	}
+	return resizeCellElms;
+}
+
+function findResizeRow($el) {
+	const resizeCellElms = [...$el.nextElementSibling.querySelectorAll('div.cell')];
+	resizeCellElms.push($el);
+	
+	return resizeCellElms;
 }
