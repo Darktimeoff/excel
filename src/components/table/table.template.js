@@ -8,13 +8,21 @@ function createCell(content) {
 }
 
 function createColumn(content) {
-    return `<div class="column">${content}</div>`;
+    return `
+    <div class="column">
+        ${content}
+        <div class="col-resize"></div>
+    </div>`;
 }
 
 function createRow(info = '', data = '') {
+    const resize = info ? '<div class="row-resize"></div>' : ''
     return `
     <div class="row">
-        <div class="row-info">${info}</div>
+        <div class="row-info">
+            ${info}
+            ${resize}
+        </div>
         <div class="row-data">${data}</div>
     </div>
     `;
@@ -24,7 +32,7 @@ function toChar(code) {
     return String.fromCharCode(code)
 }
 
-export function createTable(row = 15, col = 80) {
+export function createTable(row = 15, col = 10) {
     const colsCount = CODES.Z - CODES.A + 1;
     const rows = [];
 
