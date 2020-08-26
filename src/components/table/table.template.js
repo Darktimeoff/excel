@@ -11,12 +11,12 @@ function createColumn(content) {
     return `
     <div class="column">
         ${content}
-        <div class="col-resize"></div>
+        <div class="col-resize" data-resize="col"></div>
     </div>`;
 }
 
 function createRow(info = '', data = '') {
-    const resize = info ? '<div class="row-resize"></div>' : ''
+    const resize = info ? '<div class="row-resize" data-resize="row"></div>' : ''
     return `
     <div class="row">
         <div class="row-info">
