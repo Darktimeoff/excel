@@ -39,14 +39,18 @@ function calcSize(startSize,  dir) {
     return  startSize + dir + 'px';
 }
 
-function resizeRowAndCol(startSize, startPositon, screenEvent,  sizeParameter, $el, minvalue) {
+function resizeRowAndCol(startSize, startPositon, screenEvent,  sizeParameter, resizeCellElms, minvalue) {
     const screen = screenEvent;
     const dir = screen - startPositon;
 
     if(startPositon < screen) {
-        $el.style[sizeParameter] = checkSize(calcSize(startSize, dir, minvalue), minvalue);
+		resizeCellElms.forEach($el => {
+			$el.style[sizeParameter] = checkSize(calcSize(startSize, dir, minvalue), minvalue);
+		});
     } else {
-        $el.style[sizeParameter] = checkSize(calcSize(startSize, dir, minvalue), minvalue);
+        resizeCellElms.forEach($el => {
+			$el.style[sizeParameter] = checkSize(calcSize(startSize, dir, minvalue), minvalue);
+		});
     }
 }
 
@@ -55,8 +59,10 @@ function resize($root, $target, $el, mousedownEvent) {
         const startWidth = parseInt(window.getComputedStyle($el).width);
         const startPositon = mousedownEvent.screenX;
 
+        const resizeCellElms = findResizeCellElm($el, $root, 'col');
+
         $root.html().onmousemove = function(event) {
-            resizeRowAndCol(startWidth, startPositon, event.screenX,  'width', $el, 40);
+            resizeRowAndCol(startWidth, startPositon, event.screenX,  'width', resizeCellElms, 40);
         }
     } 
 
@@ -64,8 +70,28 @@ function resize($root, $target, $el, mousedownEvent) {
         const startHeight = parseInt(window.getComputedStyle($el).height);
         const startPositon = mousedownEvent.screenY;
 
+        const resizeCellElms = findResizeCellElm($el, $root, 'row');
+
         $root.html().onmousemove = function(event) {
-            resizeRowAndCol(startHeight, startPositon, event.screenY, 'height', $el, 24);
+            resizeRowAndCol(startHeight, startPositon, event.screenY, 'height', resizeCellElms, 24);
         }
     }
+}
+
+function findResizeCellElm($el, $root, resizeType) {
+	if(resizeType === 'col') {
+		const columnIndex = [...$el.closest('.row-data').querySelectorAll('.column')].indexOf($el);
+
+		const resizeCellElms = [...$root.html().querySelectorAll(`.row>.row-data>.cell:nth-child(${columnIndex + 1})`)];
+		resizeCellElms.push($el);
+		
+		return resizeCellElms;
+	} 
+
+	if(resizeType === 'row') {
+		const resizeCellElms = [...$el.nextElementSibling.querySelectorAll('div.cell')];
+		resizeCellElms.push($el);
+	
+		return resizeCellElms;
+	}
 }
