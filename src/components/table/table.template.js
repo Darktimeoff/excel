@@ -4,12 +4,12 @@ const CODES = {
 };
 
 function createCell(content) {
-    return `<div class="cell" contenteditable>${content}</div>`
+    return `<div class="cell" contenteditable data-cell="cell">${content}</div>`
 }
 
 function createColumn(content) {
     return `
-    <div class="column">
+    <div class="column" data-type="resizable">
         ${content}
         <div class="col-resize" data-resize="col"></div>
     </div>`;
@@ -18,12 +18,12 @@ function createColumn(content) {
 function createRow(info = '', data = '') {
     const resize = info ? '<div class="row-resize" data-resize="row"></div>' : ''
     return `
-    <div class="row">
-        <div class="row-info">
+    <div class="row" data-row="row">
+        <div class="row-info" data-type="resizable">
             ${info}
             ${resize}
         </div>
-        <div class="row-data">${data}</div>
+        <div class="row-data" data-data-row="data">${data}</div>
     </div>
     `;
 }

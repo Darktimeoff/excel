@@ -7,7 +7,7 @@ export class Table extends ExcelComponent {
     constructor($root) {
         super($root, {
             name: 'Table',
-            listeners: ['mousedown', 'mouseup']
+            listeners: ['mousedown']
         });
     }
 
@@ -18,15 +18,14 @@ export class Table extends ExcelComponent {
     onMousedown(event) {
         if(event.target.dataset.resize) {
             const $target = $(event.target);
-            const $el = $target.html().parentElement;
+            const $el = $target.closest('[data-type="resizable"]');
          
-            resize(this.$root, $target, $el, event)
-        }
-    }
+            resize(this.$root, $target, $el.html(), event);
 
-    onMouseup(event) {  
-        this.$root.html().onmousemove = null;
-        console.log('mouseup')
+            this.$root.html().onmouseup = () => {
+                this.$root.html().onmousemove = null;
+            }
+        }
     }
 }
 
@@ -83,16 +82,16 @@ function findResizeCellElm($el, $root, resizeType) {
 }
 
 function findResizeCol($el, $root) {
-	const columnIndex = [...$el.closest('.row-data').querySelectorAll('.column')].indexOf($el);
+	const columnIndex = [...$el.closest('[data-data-row="data"]').querySelectorAll('[data-type="resizable"]')].indexOf($el);
 
-	const resizeCellElms = [...$root.html().querySelectorAll(`.row>.row-data>.cell:nth-child(${columnIndex + 1})`)];
+	const resizeCellElms = [...$root.html().querySelectorAll(`[data-row="row"]>[data-data-row="data"]>[data-cell="cell"]:nth-child(${columnIndex + 1})`)];
 	resizeCellElms.push($el);
 	
 	return resizeCellElms;
 }
 
 function findResizeRow($el) {
-	const resizeCellElms = [...$el.nextElementSibling.querySelectorAll('div.cell')];
+	const resizeCellElms = [...$el.closest('[data-row="row"]').querySelectorAll('[data-cell="cell"]')];
 	resizeCellElms.push($el);
 	
 	return resizeCellElms;
