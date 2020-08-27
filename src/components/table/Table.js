@@ -16,6 +16,7 @@ export class Table extends ExcelComponent {
     }
 
     onMousedown(event) {
+        event.preventDefault();
         if(event.target.dataset.resize) {
             const $target = $(event.target);
             const $el = $target.closest('[data-type="resizable"]');
@@ -36,6 +37,7 @@ export class Table extends ExcelComponent {
             resizeElms.type = 'width';
     
             this.$root.html().onmousemove = event => {
+                event.preventDefault();
                 resizeElms.size = this.resizeRowAndCol(startWidth, startPositon, event.screenX, 40);
             }
         } 
@@ -49,11 +51,13 @@ export class Table extends ExcelComponent {
             resizeElms.type = 'height';
     
             this.$root.html().onmousemove = event => {
+                event.preventDefault();
                 resizeElms.size = this.resizeRowAndCol(startHeight, startPositon, event.screenY,  24);
             }
         }
     
-        this.$root.html().onmouseup = () => {
+        this.$root.html().onmouseup = event => {
+            event.preventDefault();
             this.$root.html().onmousemove = null;
       
             resizeElms.items.forEach(item => {
