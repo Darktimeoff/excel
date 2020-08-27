@@ -3,13 +3,13 @@ const CODES = {
     Z: 90
 };
 
-function createCell(content) {
-    return `<div class="cell" contenteditable data-cell="cell">${content}</div>`
+function createCell(_, index) {
+    return `<div class="cell" contenteditable data-cell="cell" data-cell-index="${index}"></div>`
 }
 
-function createColumn(content) {
+function createColumn(content, index) {
     return `
-    <div class="column" data-type="resizable">
+    <div class="column" data-type="resizable" data-col-index="${index}">
         ${content}
         <div class="col-resize" data-resize="col"></div>
     </div>`;
@@ -33,18 +33,17 @@ function toChar(code) {
 }
 
 export function createTable(row = 15, col = 10) {
-    const colsCount = CODES.Z - CODES.A + 1;
     const rows = [];
 
     const cols = new Array(col)
         .fill('')
-        .map((item, i) => createColumn(generatorColumnCont(CODES.Z, i)))
+        .map((item, i) => createColumn(generatorColumnCont(CODES.Z, i), i))
         
     rows.push(createRow('', cols.join('')));
 
 
     for(let i = 0; i < row; i++) {
-        rows.push(createRow(i + 1, cols.fill(createCell('')).join('')));
+        rows.push(createRow(i + 1, cols.map(createCell).join('')));
     }
 
 

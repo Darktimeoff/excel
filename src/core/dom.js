@@ -20,6 +20,14 @@ class Dom {
         this.$el.removeEventListener(event, handler);
     }
 
+    findAll(selector) {
+        return this.$el.querySelectorAll(selector);
+    }
+
+    get computedStyle() {
+        return window.getComputedStyle(this.$el)
+    }
+
     clear() {
         this.html('');
         return this;
@@ -37,6 +45,10 @@ class Dom {
         }
 
         return this;
+    }
+
+    get data() {
+        return this.$el.dataset
     }
 
     closest(selector) {
