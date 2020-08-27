@@ -18,8 +18,8 @@ function createColumn(content, index) {
 function createRow(info = '', data = '') {
     const resize = info ? '<div class="row-resize" data-resize="row"></div>' : ''
     return `
-    <div class="row" data-row="row">
-        <div class="row-info" data-type="resizable">
+    <div class="row" data-row="row" data-type="resizable" >
+        <div class="row-info">
             ${info}
             ${resize}
         </div>
