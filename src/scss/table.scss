@@ -73,6 +73,7 @@
     right: 0;
     background: $primary-color;
     opacity: 0;
+    z-index: 2;
 
     &:hover {
       opacity: 1;
@@ -81,6 +82,7 @@
 
   .col-resize {
     top: 0;
+    right: 0;
     width: 4px;
 
     &:hover {
@@ -90,6 +92,7 @@
 
   .row-resize {
     left: 0;
+    bottom: 0;
     height: 4px;
 
     &:hover {

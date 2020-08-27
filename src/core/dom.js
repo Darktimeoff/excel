@@ -28,6 +28,13 @@ class Dom {
         return window.getComputedStyle(this.$el)
     }
 
+    css(styles) {
+        Object.keys(styles).forEach(key => {
+            this.$el.style[key] = styles[key]
+        });
+        return $(this.$el);
+    }
+
     clear() {
         this.html('');
         return this;
