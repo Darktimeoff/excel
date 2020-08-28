@@ -25,23 +25,17 @@ export class TableSelection {
         });
     }
 
-    unSelect($el) {
-        $el.removeClass(TableSelection.className);
-    }
 
     selectGroup(current, target, $root, $target) {
-        if(current.row === target.row) {
-            highlightCells($root, this.current, current.col, target.col, this.group, 'row');
-        }
+        this.unSelectGroup(current, target, $root, $target);
+    
+        highlightRowAndCol(this.current, current, target, $root, this.group);
+    }
 
-        if(current.col === target.col) {
-            highlightCells($root, this.current, current.row, target.row, this.group, 'col');
-            console.log(this.group)
-        }
-
-        if(current.row !== target.row && current.col !== target.col) {
-            highlightRowAndCol(this.current, current, target, $root, this.group);
-            console.log(this.group)
+    unSelectGroup(current, target, $root, $target) {
+        if($target.contains(TableSelection.className)) {
+            removeHighlightRowAndCol(this.current, current, target, $root, this.group);
+            return;
         }
     }
 }
@@ -58,7 +52,7 @@ function highlightCells($root, $current, start, end, array, type, changeParamete
 function removeHighlightCells($root, $current, start, end, array, type, changeParameter) {
     for (let i = start + 1; i <= end; i++) {
         const cell = $root.find(cellSelectorHighlight(type, changeParameter, $current, i));
-       
+    
         cell.removeClass(TableSelection.className);
         array.delete(cell.html());
     }
@@ -70,6 +64,22 @@ function cellSelectorHighlight(type, typeParameter, $current, index) {
 
 function highlightRowAndCol($current, current, target, $root, array) {
     for(let i = current.row; i <= target.row; i++) {
-        highlightCells($root, $current, i === current.col ? current.col : current.col - 1, target.col, array, 'row', i);
+        highlightCells($root, $current, i === current.row ? current.col : current.col - 1, target.col, array, 'row', i);
     }
 }
+
+function removeHighlightRowAndCol($current, current, target, $root, array) {
+    const groupArray = [...array];
+    const endRow = getNumberAttribute(groupArray[groupArray.length - 1], 'data-cell-row');
+    const endCol = getNumberAttribute(groupArray[groupArray.length - 1], 'data-cell-col');
+
+    for (let i = current.row; i <= endRow; i++) {
+        removeHighlightCells($root, $current, target.col, endCol, array, 'row', i); 
+    }
+    
+    for (let i = target.row + 1; i <= endRow; i++) {
+        removeHighlightCells($root, $current, current.col - 1, target.col, array, 'row', i); 
+    }
+
+}
+
