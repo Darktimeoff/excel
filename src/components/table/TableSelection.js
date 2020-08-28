@@ -5,11 +5,12 @@ export class TableSelection {
 
     constructor() {
         this.group  = new Set();
+        this.current = null;
     }
-    //$el insanceof Dom
+    
     select($el) {
         this.group.add($el.html());
-   
+        this.current = $el;
         $el.addClass(TableSelection.className);
 
         this.clear($el);
@@ -28,43 +29,47 @@ export class TableSelection {
         $el.removeClass(TableSelection.className);
     }
 
-    selectGroup($el) {
-        if($el.contains(TableSelection.className)) {
-            removeGroupElm.call(this, $el);
-            console.log('afterRemove')
-            return;
+    selectGroup(current, target, $root, $target) {
+        if(current.row === target.row) {
+            highlightCells($root, this.current, current.col, target.col, this.group, 'row');
         }
 
-        this.group.add($el.html());
-        console.log('afterAdd', this.group)
-        $el.addClass(TableSelection.className);
+        if(current.col === target.col) {
+            highlightCells($root, this.current, current.row, target.row, this.group, 'col');
+            console.log(this.group)
+        }
+
+        if(current.row !== target.row && current.col !== target.col) {
+            highlightRowAndCol(this.current, current, target, $root, this.group);
+            console.log(this.group)
+        }
     }
 }
 
-function removeGroupElm($el) {
-    let group = [...this.group];
-
-    if($el.html() === group[group.length - 1]) return true;
-
-    let newGroup = [];
-    let elmIndexCol = getNumberAttribute($el.html(), 'data-cell-col');
-    let elmIndexRow = getNumberAttribute($el.html(), 'data-cell-row');
-
-    for (let i = 0; i < group.length; i++) {
-        if(getNumberAttribute(group[i], 'data-cell-col') >= elmIndexCol || elmIndexRow !== getNumberAttribute(group[i], 'data-cell-row')) {
-            group[i].classList.remove(TableSelection.className);
-        } 
-        if(getNumberAttribute(group[i], 'data-cell-col') < elmIndexCol && elmIndexRow === getNumberAttribute(group[i], 'data-cell-row'))  {
-            newGroup.push(group[i]);
-        }
+function highlightCells($root, $current, start, end, array, type, changeParameter) {
+    for (let i = start + 1; i <= end; i++) {
+        const cell = $root.find(cellSelectorHighlight(type, changeParameter, $current, i));
+       
+        cell.addClass(TableSelection.className);
+        array.add(cell.html());
     }
-
-    group = null;
-
-    this.group = new Set(newGroup);
-    newGroup = null;
 }
 
-function isThisElmHasSimpleRowOrCol($el, startCol, startRow) {
-    return Boolean(getNumberAttribute($el, 'data-cell-col') === startCol || getNumberAttribute($el, 'data-cell-row') === startRow)
+function removeHighlightCells($root, $current, start, end, array, type, changeParameter) {
+    for (let i = start + 1; i <= end; i++) {
+        const cell = $root.find(cellSelectorHighlight(type, changeParameter, $current, i));
+       
+        cell.removeClass(TableSelection.className);
+        array.delete(cell.html());
+    }
+}
+
+function cellSelectorHighlight(type, typeParameter, $current, index) {
+    return type === 'col' ? `[data-cell-col="${typeParameter ? typeParameter: +$current.data.cellCol}"][data-cell-row="${index}"]`: `[data-cell-col="${index}"][data-cell-row="${typeParameter ? typeParameter: +$current.data.cellRow}"]`;
+}
+
+function highlightRowAndCol($current, current, target, $root, array) {
+    for(let i = current.row; i <= target.row; i++) {
+        highlightCells($root, $current, i === current.col ? current.col : current.col - 1, target.col, array, 'row', i);
+    }
 }

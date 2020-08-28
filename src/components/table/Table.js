@@ -46,7 +46,10 @@ export class Table extends ExcelComponent {
             }
 
             if(event.shiftKey) {
-                this.selection.selectGroup($target);
+                const target =  $target.id(true);
+                const current = this.selection.current.id(true);
+
+                this.selection.selectGroup(current, target, this.$root, $target);
             }
 
         }
