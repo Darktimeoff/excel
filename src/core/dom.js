@@ -20,6 +20,26 @@ class Dom {
         this.$el.removeEventListener(event, handler);
     }
 
+    find(selector) {
+        return $(this.$el.querySelector(selector));
+    }
+
+    addClass(className) {
+        this.$el.classList.add(className);
+    }
+
+    removeClass(className) {
+        this.$el.classList.remove(className);
+    }
+
+    contains(className) {
+        return this.$el.classList.contains(className);
+    }
+
+    toggleClass(className) {
+        return this.$el.classList.toggle(className)
+    }
+
     findAll(selector) {
         return this.$el.querySelectorAll(selector);
     }
@@ -79,4 +99,8 @@ $.create = (tagName = 'div', classes = '') => {
     }
 
     return $($el);
+}
+
+$.isDom = ($el) => {
+    return $el instanceof Dom ? true : false;
 }
