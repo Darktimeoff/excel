@@ -73,7 +73,7 @@ function findResizeRow($el) {
 }
 
 function findResizeCol($el, $root) {
-    const resizeCellElms = [...$root.findAll(`[data-cell-index="${Number($el.data.colIndex)}"]`)];
+    const resizeCellElms = [...$root.findAll(`[data-cell-col="${Number($el.data.colIndex)}"]`)];
     resizeCellElms.push($el.html());
     
     return resizeCellElms;

@@ -12,12 +12,62 @@ class Dom {
         return this.$el;
     }
 
+    text(text) {
+        if(typeof text === 'string') {
+            this.$el.textContent = text;
+            return this;
+        }
+
+        if(this.$el.tagName === 'INPUT') {
+            return this.$el.value.trim();
+        }
+
+        return this.$el.textContent.trim();
+    }
+    
+
     on(event, handler) {
         this.$el.addEventListener(event, handler);
     }
 
     off(event, handler) {
         this.$el.removeEventListener(event, handler);
+    }
+
+    find(selector) {
+        return $(this.$el.querySelector(selector));
+    }
+
+    addClass(className) {
+        this.$el.classList.add(className);
+    }
+
+    removeClass(className) {
+        this.$el.classList.remove(className);
+    }
+
+    id(parse) {
+        if(parse) {
+            const parsed = this.id().split(':')
+            return {
+                row: +parsed[0],
+                col: +parsed[1]
+            }
+        }
+        return this.data.cellId
+    }
+
+    focus() {
+        this.$el.focus()
+        return this;
+    }
+
+    contains(className) {
+        return this.$el.classList.contains(className);
+    }
+
+    toggleClass(className) {
+        return this.$el.classList.toggle(className)
     }
 
     findAll(selector) {
@@ -79,4 +129,8 @@ $.create = (tagName = 'div', classes = '') => {
     }
 
     return $($el);
+}
+
+$.isDom = ($el) => {
+    return $el instanceof Dom ? true : false;
 }
