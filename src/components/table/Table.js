@@ -2,17 +2,16 @@ import {ExcelComponent} from '@core/ExcelComponent';
 import {$} from '@core/dom';
 import {createTable} from '@/components/table/table.template';
 import {resizeHandler} from '@/components/table/table.resize';
-import {shouldResize} from '@/components/table/table.function';
 import {TableSelection} from '@/components/table/TableSelection';
-import {isCell} from '@/components/table/table.function';
-import {getNumberAttribute} from '@core/utils';
+import {isCell, nextSelector, shouldResize} from '@/components/table/table.function';
+
 
 export class Table extends ExcelComponent {
     static className = 'excel__table';
     constructor($root) {
         super($root, {
             name: 'Table',
-            listeners: ['mousedown']
+            listeners: ['mousedown', 'keydown']
         });
     }
 
@@ -31,8 +30,7 @@ export class Table extends ExcelComponent {
         this.selection.select($cell);
     }
 
-    onMousedown(event) {
-        event.preventDefault();
+    onMousedown(event) { 
         if(shouldResize(event)) {
             resizeHandler.call(this, event);
         }
@@ -54,6 +52,21 @@ export class Table extends ExcelComponent {
 
         }
     }
+
+    onKeydown(event) {
+        const keys = ['Enter', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'];
+
+        const {key} = event;
+
+        if(keys.includes(key) && !event.shiftKey) {
+            event.preventDefault();
+           
+            const id = this.selection.current.id(true);
+           
+            let $next = this.$root.find(nextSelector(key, id));
+          
+            this.selection.select($next)
+        }
+    }
 }
-
-
+  

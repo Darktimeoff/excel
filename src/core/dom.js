@@ -43,6 +43,11 @@ class Dom {
         return this.data.cellId
     }
 
+    focus() {
+        this.$el.focus()
+        return this;
+    }
+
     contains(className) {
         return this.$el.classList.contains(className);
     }
