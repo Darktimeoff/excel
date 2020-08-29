@@ -12,6 +12,20 @@ class Dom {
         return this.$el;
     }
 
+    text(text) {
+        if(typeof text === 'string') {
+            this.$el.textContent = text;
+            return this;
+        }
+
+        if(this.$el.tagName === 'INPUT') {
+            return this.$el.value.trim();
+        }
+
+        return this.$el.textContent.trim();
+    }
+    
+
     on(event, handler) {
         this.$el.addEventListener(event, handler);
     }
