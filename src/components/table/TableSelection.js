@@ -40,6 +40,12 @@ export class TableSelection {
     unSelectGroup(current, target, $root) {
         removeHighlightRowAndCol(this.current, current, target, $root, this.group);
     }
+
+    applyStyle(style) {
+        const key = Object.keys(style)[0];
+            
+        this.group.forEach( cell => {cell.style[key] = style[key]});
+    }
 }
 
 function highlightCells($root, $current, start, end, array, type, changeParameter) {
