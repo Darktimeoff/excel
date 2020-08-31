@@ -35,12 +35,17 @@ export class Table extends ExcelComponent {
 
         this.$on('formula:enter', () => {
             this.selection.current.focus();
-        })
+        });
+
+        this.$subscribe(state => {
+            console.log('TableState', state)
+        });
     }
 
     selectCell($cell) {
         this.selection.select($cell);
-        this.$emit('table:select', $cell)
+
+        this.$emit('table:select', $cell);
     }
 
     onMousedown(event) { 
@@ -53,7 +58,7 @@ export class Table extends ExcelComponent {
            
      
             if(!event.shiftKey) {
-                this.selection.select($target);
+                this.selectCell($target);
             }
 
             if(event.shiftKey) {
