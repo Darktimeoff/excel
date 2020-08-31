@@ -3,7 +3,7 @@ import {TABLE_RESIZE, CHANGE_TEXT} from './types';
 export function rootReducer(state, action) {
     let prevState;
     let field;
-    console.log('Action', action)
+  
     switch (action.type) {
         case TABLE_RESIZE: 
             field = action.data.type === 'col' ? 'colState': 'rowState';
