@@ -31,15 +31,12 @@ export class Table extends ExcelComponent {
         
         this.$on('formula:input', text => {
             this.selection.current.text(text);
+            this.upDateTextInStore(text)
         });
 
         this.$on('formula:enter', () => {
             this.selection.current.focus();
         });
-
-        /*this.$subscribe(state => {
-            console.log('TableState', state)
-        });*/
     }
 
     selectCell($cell) {
@@ -96,8 +93,15 @@ export class Table extends ExcelComponent {
         }
     }
 
+    upDateTextInStore(value) {
+        this.$dispatch(actions.changeText({
+            id: this.selection.current.id(),
+            value
+        }));
+    }
+
     onInput(event) {
-        this.$emit('table:input', $(event.target))
+        this.upDateTextInStore($(event.target).text());
     }
 }
   

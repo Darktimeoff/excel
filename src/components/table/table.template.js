@@ -5,10 +5,11 @@ const CODES = {
 
 const DEFAULT_WIDTH = 120;
 const DEFAULT_HEIGHT = 24;
+const DEFAULT_CONTENT = '';
 
-function createCellWithStyle(width, height) {
+function createCellWithStyle(width, height, content = '') {
     return function (_, col, row) {
-        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row + 1}:${col}" data-cell-col="${col}" data-cell-row="${row + 1}" style="width:${width};height:${height}"></div>`   
+        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row + 1}:${col}" data-cell-col="${col}" data-cell-row="${row + 1}" style="width:${width};height:${height}">${content}</div>`   
     }
 }
 
@@ -45,6 +46,10 @@ function getHeight(state, index) {
     return (state[index] || DEFAULT_HEIGHT + 'px');
 }
 
+function getContentCell(state, row, col) {
+    return state[row + 1 + ':' + col] || DEFAULT_CONTENT;
+}
+
 export function createTable(row = 15, col = 10, state) {
     const rows = [];
 
@@ -60,7 +65,7 @@ export function createTable(row = 15, col = 10, state) {
 
     for(let i = 0; i < row; i++) {
         const cells = cols.map((item, j) => {
-            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1))(item, j, i)
+            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1), getContentCell(state.dataState, i, j))(item, j, i)
         }).join('');
 
         rows.push(createRow(i + 1, cells, getHeight(state.rowState, i + 1)));
