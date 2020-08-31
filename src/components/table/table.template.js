@@ -4,9 +4,12 @@ const CODES = {
 };
 
 const DEFAULT_WIDTH = 120;
+const DEFAULT_HEIGHT = 24;
 
-function createCell (_, col, row, width)  {
-    return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row}:${col}" data-cell-col="${col}" data-cell-row="${row}" style="width:${width}"></div>`   
+function createCellWithStyle(width, height) {
+    return function (_, col, row) {
+        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row + 1}:${col}" data-cell-col="${col}" data-cell-row="${row + 1}" style="width:${width};height:${height}"></div>`   
+    }
 }
 
 function createColumn(content, index, width) {
@@ -17,10 +20,10 @@ function createColumn(content, index, width) {
     </div>`;
 }
 
-function createRow(info = '', data = '') {
+function createRow(info = '', data = '', height = '') {
     const resize = info ? '<div class="row-resize" data-resize="row"></div>' : ''
     return `
-    <div class="row" data-row="row" data-type="resizable" >
+    <div class="row" data-row="row" data-type="resizable" data-row-index="${info || 0}" style="height:${height}">
         <div class="row-info">
             ${info}
             ${resize}
@@ -38,6 +41,10 @@ function getWidth(state, index) {
     return (state[index] || DEFAULT_WIDTH + 'px');
 }
 
+function getHeight(state, index) {
+    return (state[index] || DEFAULT_HEIGHT + 'px');
+}
+
 export function createTable(row = 15, col = 10, state) {
     const rows = [];
 
@@ -52,12 +59,12 @@ export function createTable(row = 15, col = 10, state) {
 
 
     for(let i = 0; i < row; i++) {
-        rows.push(createRow(i + 1, 
-            cols.map((item, j) => createCell(item, j, i, getWidth(state.colState, j)))
-            .join(''))
-        );
-    }
+        const cells = cols.map((item, j) => {
+            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1))(item, j, i)
+        }).join('');
 
+        rows.push(createRow(i + 1, cells, getHeight(state.rowState, i + 1)));
+    }
 
     return rows.join('');
 }

@@ -62,10 +62,11 @@ function resize(type, $el, mousedownEvent, $resizer, resolve) {
         resizeElms.items.forEach(item => {
             item.style[resizeElms.type] = resizeElms.size;
         });
-
+        console.log($el)
         resolve({
             value: resizeElms.size,
-            id: type === 'col' ? $el.data.colIndex : null
+            type: type,
+            id: $el.data[type + 'Index']
         });
 
         $resizer.css({bottom: '', right: '', opacity: ''});
