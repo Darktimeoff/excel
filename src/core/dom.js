@@ -28,10 +28,12 @@ class Dom {
 
     on(event, handler) {
         this.$el.addEventListener(event, handler);
+        return this;
     }
 
     off(event, handler) {
         this.$el.removeEventListener(event, handler);
+        return this;
     }
 
     find(selector) {
@@ -40,10 +42,12 @@ class Dom {
 
     addClass(className) {
         this.$el.classList.add(className);
+        return this;
     }
 
     removeClass(className) {
         this.$el.classList.remove(className);
+        return this;
     }
 
     id(parse) {
@@ -66,8 +70,21 @@ class Dom {
         return this.$el.classList.contains(className);
     }
 
+    parentElm() {
+        return $(this.$el.parentElement);
+    }
+
+    nextElm() {
+        return $(this.$el.nextElementSibling);
+    }
+
+    prevElm() {
+        return $(this.$el.previousElementSibling);
+    }
+
     toggleClass(className) {
-        return this.$el.classList.toggle(className)
+        this.$el.classList.toggle(className);
+        return this;
     }
 
     findAll(selector) {
