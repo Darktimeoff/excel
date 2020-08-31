@@ -3,15 +3,15 @@ const CODES = {
     Z: 90
 };
 
-function createCell(row) {
-    return function(_, col) {
-       return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row}:${col}" data-cell-col="${col}" data-cell-row="${row}"></div>`
-    }
+const DEFAULT_WIDTH = 120;
+
+function createCell (_, col, row, width)  {
+    return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row}:${col}" data-cell-col="${col}" data-cell-row="${row}" style="width:${width}"></div>`   
 }
 
-function createColumn(content, index) {
+function createColumn(content, index, width) {
     return `
-    <div class="column" data-type="resizable" data-col-index="${index}">
+    <div class="column" data-type="resizable" data-col-index="${index}" style="width:${width}">
         ${content}
         <div class="col-resize" data-resize="col"></div>
     </div>`;
@@ -34,18 +34,28 @@ function toChar(code) {
     return String.fromCharCode(code)
 }
 
-export function createTable(row = 15, col = 10) {
+function getWidth(state, index) {
+    return (state[index] || DEFAULT_WIDTH + 'px');
+}
+
+export function createTable(row = 15, col = 10, state) {
     const rows = [];
 
     const cols = new Array(col)
         .fill('')
-        .map((item, i) => createColumn(generatorColumnCont(CODES.Z, i), i))
+        .map((item, i) => {
+            const width = getWidth(state.colState, i);
+            return createColumn(generatorColumnCont(CODES.Z, i), i, width);
+        });
         
     rows.push(createRow('', cols.join('')));
 
 
     for(let i = 0; i < row; i++) {
-        rows.push(createRow(i + 1, cols.map(createCell(i + 1)).join('')));
+        rows.push(createRow(i + 1, 
+            cols.map((item, j) => createCell(item, j, i, getWidth(state.colState, j)))
+            .join(''))
+        );
     }
 
 

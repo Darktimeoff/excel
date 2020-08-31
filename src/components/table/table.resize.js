@@ -1,16 +1,18 @@
 import {$} from '@core/dom';
 
 export function resizeHandler(event) {
-    const $resizer = $(event.target);
-    const $parent = $resizer.closest('[data-type="resizable"]');
-    const type = $resizer.data.resize
-
-    $resizer.css({opacity: 1});
-
-    resize.call(this, type, $parent, event, $resizer);
+    return new Promise(resolve => {
+        const $resizer = $(event.target);
+        const $parent = $resizer.closest('[data-type="resizable"]');
+        const type = $resizer.data.resize
+    
+        $resizer.css({opacity: 1});
+    
+        resize.call(this, type, $parent, event, $resizer, resolve);
+    });
 }
 
-function resize(type, $el, mousedownEvent, $resizer) {
+function resize(type, $el, mousedownEvent, $resizer, resolve) {
     const resizeElms = {}
 
     if(type === 'col') {
@@ -59,6 +61,11 @@ function resize(type, $el, mousedownEvent, $resizer) {
 
         resizeElms.items.forEach(item => {
             item.style[resizeElms.type] = resizeElms.size;
+        });
+
+        resolve({
+            value: resizeElms.size,
+            id: type === 'col' ? $el.data.colIndex : null
         });
 
         $resizer.css({bottom: '', right: '', opacity: ''});
