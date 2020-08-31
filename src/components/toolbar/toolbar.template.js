@@ -1,46 +1,46 @@
-export function createToolbar() {
+export function createToolbar(s) {
     const buttons = [
         {
             icon:'format_align_left',
-            active: false,
+            active: s['textAlign'] === 'left',
             value: {
                 textAlign: 'left'
             }
         }, 
         {
             icon:'format_align_center',
-            active: true,
+            active: s['textAlign'] === 'center',
             value: {
                 textAlign: 'center'
             }
         }, 
         {   
             icon:'format_align_right',
-            active: false,
+            active: s['textAlign'] === 'right',
             value: {
                 textAlign: 'right'
             }
         }, 
         {
             icon:'format_bold',
-            active: true,
+            active: s['fontWeight'] === 'bold',
             value: {
-                fontWeight: 'bold'
+                fontWeight: s['fontWeight'] === 'bold' ? 'normal' : 'bold'
             }
         }, 
         {
             icon:'format_italic',
-            active: false,
+            active: s['fontStyle'] === 'italic',
             value: {
-                fontStyle: 'italic'
+                fontStyle: s['fontStyle'] === 'italic' ? 'normal' : 'italic'
             }
 
         }, 
         {
             icon:'format_underlined',
-            active: false,
+            active: s['textDecoration'] === 'underline',
             value: {
-                textDecoration: 'underline'
+                textDecoration: s['textDecoration'] === 'underline' ? 'none' : 'underline'
             }
         }
     ];
