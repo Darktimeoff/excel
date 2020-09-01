@@ -1,5 +1,6 @@
 import './scss/index.scss';
-import {Excel} from '@/components/excel/Excel';
+import {Router} from '@core/routes/Router';
+/*import {Excel} from '@/components/excel/Excel';
 import {Header} from '@/components/header/Header';
 import {Toolbar} from '@/components/toolbar/Toolbar';
 import {Formula} from '@/components/formula/Formula';
@@ -21,4 +22,6 @@ const excel = new Excel('#app', {
     store
 });
 
-excel.render()
+excel.render()*/
+
+new Router('#app', {});
