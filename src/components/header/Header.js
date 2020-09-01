@@ -38,7 +38,7 @@ export class Header extends ExcelComponent{
 
     onClick(event) {
         const $target = $(event.target).closest('[data-button]');
-
+      
         if($target.data.button === 'remove') {
             const decision = confirm('Вы действительно хотите удалить эту таблицу ?');
 
