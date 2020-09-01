@@ -1,5 +1,8 @@
 import './scss/index.scss';
 import {Router} from '@core/routes/Router';
+import {DashboardPage} from '@/pages/DashboardPage';
+import {ExcelPage} from '@/pages/ExcelPage';
+
 /*import {Excel} from '@/components/excel/Excel';
 import {Header} from '@/components/header/Header';
 import {Toolbar} from '@/components/toolbar/Toolbar';
@@ -24,4 +27,7 @@ const excel = new Excel('#app', {
 
 excel.render()*/
 
-new Router('#app', {});
+new Router('#app', {
+    dashboard: DashboardPage,
+    excel: ExcelPage
+});
