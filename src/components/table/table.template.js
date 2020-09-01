@@ -1,3 +1,5 @@
+import {toInlineStyles} from '@core/utils';
+
 const CODES = {
     A: 65,
     Z: 90
@@ -7,9 +9,12 @@ const DEFAULT_WIDTH = 120;
 const DEFAULT_HEIGHT = 24;
 const DEFAULT_CONTENT = '';
 
-function createCellWithStyle(width, height, content = '') {
+function createCellWithStyle(width, height, content = '', state) {
     return function (_, col, row) {
-        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row + 1}:${col}" data-cell-col="${col}" data-cell-row="${row + 1}" style="width:${width};height:${height}">${content}</div>`   
+        const id = `${row + 1}:${col}`;
+
+        const styles = toInlineStyles(state.stylesState[id]);
+        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${id}" data-cell-col="${col}" data-cell-row="${row + 1}" style="${styles};width:${width};height:${height}">${content}</div>`   
     }
 }
 
@@ -65,7 +70,7 @@ export function createTable(row = 15, col = 10, state) {
 
     for(let i = 0; i < row; i++) {
         const cells = cols.map((item, j) => {
-            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1), getContentCell(state.dataState, i, j))(item, j, i)
+            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1), getContentCell(state.dataState, i, j), state)(item, j, i)
         }).join('');
 
         rows.push(createRow(i + 1, cells, getHeight(state.rowState, i + 1)));

@@ -16,6 +16,10 @@ export class TableSelection {
         this.clear($el);
     }
 
+    get selectedIds() {
+        return [...this.group].map( $el => $el.dataset.cellId)
+    }
+
     clear($el) {
         this.group.forEach( item => {
             if(item !== $el.html()) {
