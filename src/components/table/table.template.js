@@ -1,4 +1,5 @@
 import {toInlineStyles} from '@core/utils';
+import {defaultStyles} from '@/constants';
 
 const CODES = {
     A: 65,
@@ -13,7 +14,10 @@ function createCellWithStyle(width, height, content = '', state) {
     return function (_, col, row) {
         const id = `${row + 1}:${col}`;
 
-        const styles = toInlineStyles(state.stylesState[id]);
+        const styles = toInlineStyles({
+            ...defaultStyles,
+            ...state.stylesState[id]
+        });
         return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${id}" data-cell-col="${col}" data-cell-row="${row + 1}" style="${styles};width:${width};height:${height}">${content}</div>`   
     }
 }
