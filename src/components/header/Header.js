@@ -3,6 +3,7 @@ import {$} from '@core/dom';
 import {changeTitle} from '@/redux/actions';
 import {defaultTitle} from '@/constants';
 
+
 export class Header extends ExcelComponent{
     static className = 'excel__header';
     
@@ -13,6 +14,7 @@ export class Header extends ExcelComponent{
             ...options
         });
     }
+
     toHTML() {
         const title = this.store.getState().title || defaultTitle; 
         return `
