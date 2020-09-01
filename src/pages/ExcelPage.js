@@ -14,9 +14,6 @@ export class ExcelPage extends Page {
     getRoot() {
         const state = storage(storageName(this.params));
         const initialState = normalizeInitialState(state);
-
-        initialState.dateView  = new Date().toLocaleDateString();
-
         const store = createStore(rootReducer, initialState);
         const stateListener = debounce(state => {
             storage(storageName(this.params), state);

@@ -1,9 +1,14 @@
 import {storage} from '@core/utils';
-function toHTML(title, date) {
+function toHTML(key) {
+    const state = storage(key);
+    const id = key.split(':')[1]
     return `
     <li class="db__record">
-        <a href="#">${title}</a>
-        <strong>${date}</strong>
+        <a href="#excel/${id}">${state.title}</a>
+        <strong>
+            ${new Date(state.dateView).toLocaleDateString()}
+            ${new Date(state.dateView).toLocaleTimeString()}
+        </strong>
     </li>
     `;
 }
@@ -37,10 +42,7 @@ export function createRecordsTable() {
     </div>
 
     <ul class="db__list">
-        ${keys.map(key => {
-            const state = storage(key);
-            return toHTML(state.title, state.dateView);
-        }).join('')}
+        ${keys.map(toHTML).join('')}
     </ul>
     `
 }
