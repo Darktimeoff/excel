@@ -16,6 +16,10 @@ export class TableSelection {
         this.clear($el);
     }
 
+    get selectedIds() {
+        return [...this.group].map( $el => $el.dataset.cellId)
+    }
+
     clear($el) {
         this.group.forEach( item => {
             if(item !== $el.html()) {
@@ -39,6 +43,12 @@ export class TableSelection {
 
     unSelectGroup(current, target, $root) {
         removeHighlightRowAndCol(this.current, current, target, $root, this.group);
+    }
+
+    applyStyle(style) {
+        const key = Object.keys(style)[0];
+            
+        this.group.forEach( cell => {cell.style[key] = style[key]});
     }
 }
 

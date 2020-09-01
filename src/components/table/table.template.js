@@ -1,26 +1,41 @@
+import {toInlineStyles} from '@core/utils';
+import {defaultStyles} from '@/constants';
+import {parse} from '@core/parse';
+
 const CODES = {
     A: 65,
     Z: 90
 };
 
-function createCell(row) {
-    return function(_, col) {
-       return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${row}:${col}" data-cell-col="${col}" data-cell-row="${row}"></div>`
+const DEFAULT_WIDTH = 120;
+const DEFAULT_HEIGHT = 24;
+const DEFAULT_CONTENT = '';
+
+function createCellWithStyle(width, height, content = '', state) {
+    return function (_, col, row) {
+        const id = `${row + 1}:${col}`;
+
+        const styles = toInlineStyles({
+            ...defaultStyles,
+            ...state.stylesState[id]
+        });
+
+        return  `<div class="cell" contenteditable data-cell="cell" data-cell-id="${id}" data-value="${content || ''}" data-cell-col="${col}" data-cell-row="${row + 1}" style="${styles};width:${width};height:${height}">${parse(content)}</div>`   
     }
 }
 
-function createColumn(content, index) {
+function createColumn(content, index, width) {
     return `
-    <div class="column" data-type="resizable" data-col-index="${index}">
+    <div class="column" data-type="resizable" data-col-index="${index}" style="width:${width}">
         ${content}
         <div class="col-resize" data-resize="col"></div>
     </div>`;
 }
 
-function createRow(info = '', data = '') {
+function createRow(info = '', data = '', height = '') {
     const resize = info ? '<div class="row-resize" data-resize="row"></div>' : ''
     return `
-    <div class="row" data-row="row" data-type="resizable" >
+    <div class="row" data-row="row" data-type="resizable" data-row-index="${info || 0}" style="height:${height}">
         <div class="row-info">
             ${info}
             ${resize}
@@ -34,20 +49,38 @@ function toChar(code) {
     return String.fromCharCode(code)
 }
 
-export function createTable(row = 15, col = 10) {
+function getWidth(state, index) {
+    return (state[index] || DEFAULT_WIDTH + 'px');
+}
+
+function getHeight(state, index) {
+    return (state[index] || DEFAULT_HEIGHT + 'px');
+}
+
+function getContentCell(state, row, col) {
+    return state[row + 1 + ':' + col] || DEFAULT_CONTENT;
+}
+
+export function createTable(row = 15, col = 10, state) {
     const rows = [];
 
     const cols = new Array(col)
         .fill('')
-        .map((item, i) => createColumn(generatorColumnCont(CODES.Z, i), i))
+        .map((item, i) => {
+            const width = getWidth(state.colState, i);
+            return createColumn(generatorColumnCont(CODES.Z, i), i, width);
+        });
         
     rows.push(createRow('', cols.join('')));
 
 
     for(let i = 0; i < row; i++) {
-        rows.push(createRow(i + 1, cols.map(createCell(i + 1)).join('')));
-    }
+        const cells = cols.map((item, j) => {
+            return createCellWithStyle(getWidth(state.colState, j), getHeight(state.rowState, i + 1), getContentCell(state.dataState, i, j), state)(item, j, i)
+        }).join('');
 
+        rows.push(createRow(i + 1, cells, getHeight(state.rowState, i + 1)));
+    }
 
     return rows.join('');
 }

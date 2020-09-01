@@ -4,6 +4,9 @@ import {createTable} from '@/components/table/table.template';
 import {resizeHandler} from '@/components/table/table.resize';
 import {TableSelection} from '@/components/table/TableSelection';
 import {isCell, nextSelector, shouldResize} from '@/components/table/table.function';
+import {defaultStyles} from '@/constants';
+import * as actions from '@/redux/actions';
+import {parse} from '@core/parse';
 
 
 export class Table extends ExcelComponent {
@@ -17,7 +20,7 @@ export class Table extends ExcelComponent {
     }
 
     toHTML() {
-        return createTable(50, 30);
+        return createTable(50, 30, this.store.getState());
     }
 
     prepare() {
@@ -28,24 +31,48 @@ export class Table extends ExcelComponent {
         super.init();
         
         this.selectCell(this.$root.find('[data-cell-id="1:0"]'));
-
-        this.$on('formula:input', text => {
-            this.selection.current.text(text);
+        
+        this.$on('formula:input', value => {
+            this.selection.current
+                .attr('data-value', value)
+                .text(parse(value));
+            this.upDateTextInStore(value)
         });
 
         this.$on('formula:enter', () => {
             this.selection.current.focus();
-        })
+        });
+
+        this.$on('toolbar:applyStyle', value => {
+        	this.selection.applyStyle(value);
+        	this.$dispatch(actions.applyStyle({
+				value,
+				ids: this.selection.selectedIds,
+        	}))
+        });
     }
 
     selectCell($cell) {
         this.selection.select($cell);
-        this.$emit('table:select', $cell)
+        this.$emit('table:select', $cell);
+
+        const styles = $cell.getStyles(Object.keys(defaultStyles));
+      
+        this.$dispatch(actions.changeStyles(styles))
+    }
+
+    async  resizeTable(event) {
+        try {
+            const data  = await resizeHandler.call(this, event);
+            this.$dispatch(actions.tableResize(data));
+        } catch (e) {
+            console.warn('Resize error', e.message);
+        }
     }
 
     onMousedown(event) { 
         if(shouldResize(event)) {
-            resizeHandler.call(this, event);
+            this.resizeTable(event)
         }
 
         if(isCell(event)) {
@@ -53,7 +80,7 @@ export class Table extends ExcelComponent {
            
      
             if(!event.shiftKey) {
-                this.selection.select($target);
+                this.selectCell($target);
             }
 
             if(event.shiftKey) {
@@ -82,8 +109,15 @@ export class Table extends ExcelComponent {
         }
     }
 
+    upDateTextInStore(value) {
+        this.$dispatch(actions.changeText({
+            id: this.selection.current.id(),
+            value
+        }));
+    }
+
     onInput(event) {
-        this.$emit('table:input', $(event.target))
+        this.upDateTextInStore($(event.target).text());
     }
 }
   
